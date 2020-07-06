@@ -1,6 +1,13 @@
 #lang racket
 ; test utils
+(define zeros (lambda () (cons 0 zeros)))
 (define ones (lambda () (cons 1 ones)))
+
+(define nats
+  (letrec ([f (lambda (x) (cons x (lambda () (f (+ x 1)))))])
+    (lambda () (f 1))))
+
+(define negs (lambda () ((stream-map (lambda (x) (- x)) nats))))
 
 (define (stream-for-n-steps s n)
   (if (= n 0)
@@ -61,3 +68,17 @@
     (lambda () (cons
                 (cons (car next1) (car next2))
                 (stream-zip (cdr next1) (cdr next2))))))
+
+; 6 - interleave
+; (stream-for-n-steps (interleave (list nats negs zeros)) 10)
+(define (interleave ss)
+  (let* ([current (car ss)]
+         [next (current)])
+    (lambda () (cons
+                (car next)
+                (interleave (append
+                             (cdr ss)
+                             (cons (cdr next) null)))))))
+
+    
+    
