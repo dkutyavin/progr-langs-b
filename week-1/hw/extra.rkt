@@ -53,3 +53,11 @@
     (lambda () (cons
                 (f next-v)
                 (stream-map f next-s)))))
+
+; 5 - stream-zip
+(define (stream-zip s1 s2)
+  (let ([next1 (s1)]
+        [next2 (s2)])
+    (lambda () (cons
+                (cons (car next1) (car next2))
+                (stream-zip (cdr next1) (cdr next2))))))
