@@ -33,3 +33,12 @@
                        (set! cache (cons (cons x result) cache))
                        (cons result (lambda () (f (+ 1 x))))))])
     (lambda () (f 0))))
+
+; stream-until
+(define (stream-until f s)
+  (let* ([next (s)]
+         [next-v (car next)]
+         [next-s (cdr next)])
+    (if (f next-v)
+        (stream-until f next-s)
+        next-v)))
