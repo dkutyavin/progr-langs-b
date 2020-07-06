@@ -69,7 +69,7 @@
                 (cons (car next1) (car next2))
                 (stream-zip (cdr next1) (cdr next2))))))
 
-; 6 - interleave
+; 7 - interleave
 ; (stream-for-n-steps (interleave (list nats negs zeros)) 10)
 (define (interleave ss)
   (let* ([current (car ss)]
@@ -80,5 +80,15 @@
                              (cdr ss)
                              (cons (cdr next) null)))))))
 
-    
-    
+; 8 - pack
+(define (pack s n)
+  (letrec ([next-s null]
+           [get-n (lambda (acc-s acc-n)
+                    (cond
+                      [(= acc-n 0) (set! next-s ((lambda () (pack acc-s n)))) null]
+                      [#t
+                       (let ([next (acc-s)])
+                          (cons
+                           (car next)
+                           (get-n (cdr next) (- acc-n 1))))]))])
+    (lambda () (cons (get-n s n) next-s))))
