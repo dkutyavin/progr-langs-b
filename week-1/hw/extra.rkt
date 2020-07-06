@@ -92,3 +92,13 @@
                            (car next)
                            (get-n (cdr next) (- acc-n 1))))]))])
     (lambda () (cons (get-n s n) next-s))))
+
+; sqrt-stream 
+(define (sqrt-stream n)
+  (letrec ([x n]
+           [calc (lambda (n) (/ (+ x (/ n x)) 2))]
+           [stream (lambda (n)
+                     (cons
+                      (calc n)
+                      (lambda () (stream (calc n)))))])
+    (lambda () (stream x))))
