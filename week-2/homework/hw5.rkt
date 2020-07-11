@@ -58,6 +58,16 @@
                        (int-num v2)))
                (error "MUPL addition applied to non-number")))]
         ;; CHANGE add more cases here
+        [(int? e) e]
+        [(ifgreater? e)
+         (let ([v1 (eval-under-env (ifgreater-e1 e) env)]
+               [v2 (eval-under-env (ifgreater-e2 e) env)])
+           (if (and (int? v1) (int? v2))
+               (if (> (int-num v1) (int-num v2))
+                  (eval-under-env (ifgreater-e3 e) env)
+                  (eval-under-env (ifgreater-e4 e) env))
+               (error "MUPPL ifgreater applied to non-number")))]
+        
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
