@@ -59,6 +59,9 @@
                (error "MUPL addition applied to non-number")))]
         ;; CHANGE add more cases here
         [(int? e) e]
+        [(fun? e) (closure env e)]
+        [(closure? e) e]
+        
         [(ifgreater? e)
          (let ([v1 (eval-under-env (ifgreater-e1 e) env)]
                [v2 (eval-under-env (ifgreater-e2 e) env)])
@@ -68,6 +71,25 @@
                   (eval-under-env (ifgreater-e4 e) env))
                (error "MUPPL ifgreater applied to non-number")))]
         
+        [(mlet? e) (eval-under-env
+                    (mlet-body e)
+                    (cons (cons (mlet-var e) (mlet-e e)) env))]
+
+        [(call? e)
+         (let ([closure-from-call (eval-under-env (call-funexp e) env)]
+               [arg (eval-under-env (call-actual e) env)])
+           (if (closure? closure-from-call)
+               (let* ([fun-exp (closure-fun closure-from-call)]
+                      [name-arg-pair (cons (fun-formal fun-exp) arg)]
+                      [name-fun-pair (if (fun-nameopt fun-exp) (cons (fun-nameopt fun-exp) fun-exp) #f)]
+                      [closure-env
+                       (if name-fun-pair
+                           (cons name-fun-pair (cons name-arg-pair env))
+                           (cons name-arg-pair env))]) 
+                 (eval-under-env (fun-body fun-exp) closure-env))
+               (error "~v is not a function" closure-from-call)))]
+               
+           
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
