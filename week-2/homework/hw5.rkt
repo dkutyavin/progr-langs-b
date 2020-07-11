@@ -88,9 +88,27 @@
                            (cons name-arg-pair env))]) 
                  (eval-under-env (fun-body fun-exp) closure-env))
                (error "~v is not a function" closure-from-call)))]
+
+        [(apair? e)
+         (let ([v1 (eval-under-env (apair-e1 e) env)]
+               [v2 (eval-under-env (apair-e2 e) env)])
+           (apair v1 v2))]
+
+        [(fst? e)
+         (let ([v (eval-under-env (fst-e e) env)])
+           (if (apair? v)
+               (apair-e1 v)
+               (error "~v is not a pair")))]
+
+        [(snd? e)
+         (let ([v (eval-under-env (snd-e e) env)])
+           (if (apair? v)
+               (apair-e2 v)
+               (error "~v is not a pair")))]
                
            
         [#t (error (format "bad MUPL expression: ~v" e))]))
+
 
 ;; Do NOT change
 (define (eval-exp e)
