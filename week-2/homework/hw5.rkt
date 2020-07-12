@@ -105,6 +105,10 @@
            (if (apair? v)
                (apair-e2 v)
                (error "~v is not a pair")))]
+
+        [(isaunit? e)
+         (let ([v (eval-under-env (isaunit-e e) env)])
+           (if (aunit? v) (int 1) (int 0)))]
                
            
         [#t (error (format "bad MUPL expression: ~v" e))]))
