@@ -61,6 +61,7 @@
         [(int? e) e]
         [(fun? e) (closure env e)]
         [(closure? e) e]
+        [(aunit? e) e]
         
         [(ifgreater? e)
          (let ([v1 (eval-under-env (ifgreater-e1 e) env)]
