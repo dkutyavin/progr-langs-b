@@ -74,7 +74,7 @@
         
         [(mlet? e) (eval-under-env
                     (mlet-body e)
-                    (cons (cons (mlet-var e) (mlet-e e)) env))]
+                    (cons (cons (mlet-var e) (eval-under-env (mlet-e e) env)) env))]
 
         [(call? e)
          (let ([c (eval-under-env (call-funexp e) env)]
