@@ -27,3 +27,13 @@
                          (sum-tree (btree-node-left bt))
                          (sum-tree (btree-node-right bt)))]
         [#t (error "Incorrect btree:" bt)]))
+
+(define (prune-at-v bt v)
+  (cond [(btree-leaf? bt) bt]
+        [(btree-node? bt)
+         (if (equal? (btree-node-value bt) v)
+             (btree-leaf)
+             (btree-node (btree-node-value bt)
+                         (prune-at-v (btree-node-left bt) v)
+                         (prune-at-v (btree-node-right bt) v)))]
+        [#t (error "Incorrect btree:" bt)]))
