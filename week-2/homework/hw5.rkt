@@ -138,7 +138,13 @@
 
 ;; Problem 4
 
-(define mupl-map "CHANGE")
+(define mupl-map (fun "mupl-map" "f"
+                      (fun #f "xs"
+                           (ifaunit (var "xs")
+                                 (aunit)
+                                 (apair
+                                  (call (var "f") (fst (var "xs")))
+                                  (call (call (var "mupl-map") (var "f")) (snd (var "xs"))))))))
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
