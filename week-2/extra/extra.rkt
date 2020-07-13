@@ -11,11 +11,19 @@
                (btree-node 10
                            (btree-leaf)
                            (btree-node 12 (btree-leaf) (btree-leaf))))))
-   
+
 
 (define (tree-height bt)
   (cond [(btree-leaf? bt) 0]
+        [(btree-node? bt)
+         (let ([left-height (tree-height (btree-node-left bt))]
+               [right-height (tree-height (btree-node-right bt))])
+           (+ 1 (if (> left-height right-height) left-height right-height)))]
+        [#t (error "Incorrect btree:" bt)]))
+
+(define (sum-tree bt)
+  (cond [(btree-leaf? bt) 0]
         [(btree-node? bt) (+ (btree-node-value bt)
-                         (tree-height (btree-node-left bt))
-                         (tree-height (btree-node-right bt)))]
+                         (sum-tree (btree-node-left bt))
+                         (sum-tree (btree-node-right bt)))]
         [#t (error "Incorrect btree:" bt)]))
