@@ -2,3 +2,20 @@
 
 (struct btree-leaf () #:transparent)
 (struct btree-node (value left right) #:transparent)
+
+(define test-btree
+  (btree-node 5
+   (btree-node 2 (btree-leaf) (btree-leaf))
+   (btree-node 7
+               (btree-node 6 (btree-leaf) (btree-leaf))
+               (btree-node 10
+                           (btree-leaf)
+                           (btree-node 12 (btree-leaf) (btree-leaf))))))
+   
+
+(define (tree-height bt)
+  (cond [(btree-leaf? bt) 0]
+        [(btree-node? bt) (+ (btree-node-value bt)
+                         (tree-height (btree-node-left bt))
+                         (tree-height (btree-node-right bt)))]
+        [#t (error "Incorrect btree:" bt)]))
