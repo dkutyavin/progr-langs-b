@@ -37,3 +37,12 @@
                          (prune-at-v (btree-node-left bt) v)
                          (prune-at-v (btree-node-right bt) v)))]
         [#t (error "Incorrect btree:" bt)]))
+
+(define (well-formed-tree? bt)
+  (cond [(btree-leaf? bt) #t]
+        [(btree-node? bt)
+         (if (and (well-formed-tree? (btree-node-left bt))
+                  (well-formed-tree? (btree-node-right bt)))
+             #t
+             #f)]
+        [#t #f]))
