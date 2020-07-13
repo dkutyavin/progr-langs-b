@@ -77,18 +77,18 @@
                     (cons (cons (mlet-var e) (mlet-e e)) env))]
 
         [(call? e)
-         (let ([closure-from-call (eval-under-env (call-funexp e) env)]
+         (let ([c (eval-under-env (call-funexp e) env)]
                [arg (eval-under-env (call-actual e) env)])
-           (if (closure? closure-from-call)
-               (let* ([fun-exp (closure-fun closure-from-call)]
-                      [name-arg-pair (cons (fun-formal fun-exp) arg)]
-                      [name-fun-pair (if (fun-nameopt fun-exp) (cons (fun-nameopt fun-exp) fun-exp) #f)]
-                      [closure-env
-                       (if name-fun-pair
-                           (cons name-fun-pair (cons name-arg-pair env))
-                           (cons name-arg-pair env))]) 
-                 (eval-under-env (fun-body fun-exp) closure-env))
-               (error "~v is not a function" closure-from-call)))]
+           (if (closure? c)
+               (let* ([f (closure-fun c)]
+                      [arg-pair (cons (fun-formal f) arg)]
+                      [fun-pair (if (fun-nameopt f) (cons (fun-nameopt f) c) #f)]
+                      [env-from-closure
+                       (if fun-pair
+                           (cons fun-pair (cons arg-pair (closure-env c)))
+                           (cons arg-pair (closure-env c)))])
+                 (eval-under-env (fun-body f) env-from-closure))
+               (error "~v is not a function" c)))]
 
         [(apair? e)
          (let ([v1 (eval-under-env (apair-e1 e) env)]
