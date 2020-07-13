@@ -72,9 +72,9 @@
                   (eval-under-env (ifgreater-e4 e) env))
                (error "MUPPL ifgreater applied to non-number")))]
         
-        [(mlet? e) (eval-under-env
-                    (mlet-body e)
-                    (cons (cons (mlet-var e) (eval-under-env (mlet-e e) env)) env))]
+        [(mlet? e) (let ([v (eval-under-env (mlet-e e) env)]
+                         [name (mlet-var e)])
+                     (eval-under-env (mlet-body e) (cons (cons name v) env)))]
 
         [(call? e)
          (let ([c (eval-under-env (call-funexp e) env)]
